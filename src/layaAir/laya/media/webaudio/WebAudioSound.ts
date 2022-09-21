@@ -166,7 +166,7 @@ export class WebAudioSound extends EventDispatcher {
         this.url = url;
 
         this.audioBuffer = WebAudioSound._dataCache[url];
-        if (this.audioBuffer) {
+        if (this.audioBuffer) { // 已经有了音频数据
             this._loaded(this.audioBuffer);
             return;
         }
@@ -234,7 +234,7 @@ export class WebAudioSound extends EventDispatcher {
     }
 
     /**
-     * 播放声音
+     * 播放声音 (一个webAudioSound.audioBuffer可以支持多个channel播放)
      * @param startTime 起始时间
      * @param loops 循环次数
      * @return

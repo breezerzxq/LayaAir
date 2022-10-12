@@ -191,7 +191,8 @@ export class RenderSprite {
 			var wRate: number = width / tex.sourceWidth;
             var hRate: number = height / tex.sourceHeight;
             width = tex.width * wRate;
-            height = tex.height * hRate;
+			height = tex.height * hRate;
+			
             if (width <= 0 || height <= 0) return;
 
             var px = x - sprite.pivotX + tex.offsetX * wRate;
@@ -199,6 +200,7 @@ export class RenderSprite {
 
 			context.drawTexture(tex, px, py, width, height);
 		}
+		
 		var next: RenderSprite = this._next;
 		if (next != RenderSprite.NORENDER)
 			next._fun.call(next, sprite, context, x, y);

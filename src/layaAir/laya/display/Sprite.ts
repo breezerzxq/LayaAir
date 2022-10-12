@@ -1792,17 +1792,24 @@ export class Sprite extends Node {
 
     set texture(value: Texture) {
         if (typeof (value) == 'string') {
-            this.loadImage((<string>((<any>value))));
-        } else if (this._texture != value) {
-            this._texture && this._texture._removeReference();
+            this.loadImage((<string>((<any>value)))); // loadImage完，再设置texture
+        } else if (this._texture != value) { // 检查更新texture
+            this._texture && this._texture._removeReference(); // 移除旧计数
+
             this._texture = value;
-            value && value._addReference();
+            value && value._addReference(); // 增加新计数
+
             this._setTexture(value);
             this._setWidth(this._texture, this.width);
             this._setHeight(this._texture, this.height);
-            if (value) this._renderType |= SpriteConst.TEXTURE;
-            else this._renderType &= ~SpriteConst.TEXTURE;
+            
+            if (value) 
+                this._renderType |= SpriteConst.TEXTURE; // 需要渲染图片
+            else 
+                this._renderType &= ~SpriteConst.TEXTURE; // 不需要渲染图片
+
             this._setRenderType(this._renderType);
+            
             this.repaint();
         }
     }

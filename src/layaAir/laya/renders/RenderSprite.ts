@@ -267,7 +267,7 @@ export class RenderSprite {
 		x = x - sprite.pivotX;
 		y = y - sprite.pivotY;
 		var textLastRender: boolean = sprite._getBit(Const.DRAWCALL_OPTIMIZE) && context.drawCallOptimize(true);
-		if (style.viewport) {
+		if (style.viewport) { // 有设置视口，则需要判断子对象是否在视口内
 			var rect: Rectangle = style.viewport;
 			var left: number = rect.x;
 			var top: number = rect.y;
@@ -282,7 +282,7 @@ export class RenderSprite {
 					ele.render(context, x, y);
 				}
 			}
-		} else {
+		} else { // 没有视口设置，只需要判断child.visible = true，才进行渲染。
 			for (var i: number = 0; i < n; ++i)
 				(ele = ((<Sprite>childs[i])))._visible && ele.render(context, x, y);
 		}

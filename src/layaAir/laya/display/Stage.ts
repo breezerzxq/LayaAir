@@ -607,7 +607,11 @@ export class Stage extends Sprite {
 	parentRepaint(type: number = SpriteConst.REPAINT_CACHE): void {
 	}
 
-	/**@internal */
+	/**
+	 * @internal
+	 * 
+	 * 主循环
+	 */
 	_loop(): boolean {
 		this._globalRepaintGet = this._globalRepaintSet;
 		this._globalRepaintSet = false;
@@ -701,25 +705,34 @@ export class Stage extends Sprite {
 		if (!isFastMode && !isDoubleLoop)//统一双帧处理渲染
 			return;
 
-		CallLater.I._update();
+		CallLater.I._update(); // 处理所有callLater事务
+		
 		Stat.loopCount++;
 		RenderInfo.loopCount = Stat.loopCount;
 
 		PerformancePlugin.begainSample(PerformancePlugin.PERFORMANCE_LAYA);
+
 		if (this.renderingEnabled) {
 			for (var i: number = 0, n: number = this._scene3Ds.length; i < n; i++)//更新3D场景,必须提出来,否则在脚本中移除节点会导致BUG
 				this._scene3Ds[i]._update();
-			context.clear();
-			super.render(context, x, y);
+
+			context.clear(); // 1. 清空缓存区
+
+			super.render(context, x, y); // 2. 搜集该帧绘制指令并绘制到缓冲区 (渲染耗时就在这里)
+			
 			Stat._StatRender.renderNotCanvas(context, x, y);
 		}
 
 		if (this.renderingEnabled) {
 			Stage.clear(this._bgColor);
-			context.flush();
+
+			context.flush(); // 3. 刷新缓存区，即把缓冲区绘制的内容绘制到画面上。
+
 			VectorGraphManager.instance && VectorGraphManager.getInstance().endDispose();
 		}
-		this._updateTimers();
+
+		this._updateTimers(); // 更新各种定时器
+
 		PerformancePlugin.endSample(PerformancePlugin.PERFORMANCE_LAYA);
 	}
 

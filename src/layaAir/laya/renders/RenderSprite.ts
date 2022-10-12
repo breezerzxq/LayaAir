@@ -37,39 +37,10 @@ export interface _RenderFunction{
  * 精灵渲染器
  */
 export class RenderSprite {
-	/** @private */
-	//public static const IMAGE:int = 0x01;
-	/** @private */
-	//public static const ALPHA:int = 0x02;
-	/** @private */
-	//public static const TRANSFORM:int = 0x04;
-	/** @private */
-	//public static const BLEND:int = 0x08;
-	/** @private */
-	//public static const CANVAS:int = 0x10;
-	/** @private */
-	//public static const FILTERS:int = 0x20;
-	/** @private */
-	//public static const MASK:int = 0x40;
-	/** @private */
-	//public static const CLIP:int = 0x80;
-	/** @private */
-	//public static const STYLE:int = 0x100;
-	/** @private */
-	//public static const GRAPHICS:int = 0x200;
-	/** @private */
-	//public static const CUSTOM:int = 0x400;
-	/** @private */
-	//public static const CHILDS:int = 0x800;
-	/** @private */
 	static INIT: number = 0x11111;
-	/** @private */
 	static renders: RenderSprite[] = [];
-	/** @private */
 	protected static NORENDER: RenderSprite =  new RenderSprite(0, null);
-	/** @internal */
 	_next: RenderSprite;
-	/** @internal */
 	_fun: Function;
 
 	/** @internal */
@@ -91,12 +62,6 @@ export class RenderSprite {
 				RenderSprite.renders[n] = o;
 			}
 		}
-
-		//_initSame([SpriteConst.IMAGE, SpriteConst.GRAPHICS, SpriteConst.TRANSFORM, SpriteConst.ALPHA], RunDriver.createRenderSprite(SpriteConst.IMAGE, null));
-		//
-		//renders[SpriteConst.IMAGE | SpriteConst.GRAPHICS] = RunDriver.createRenderSprite(SpriteConst.IMAGE | SpriteConst.GRAPHICS, null);
-		//
-		//renders[SpriteConst.IMAGE | SpriteConst.TRANSFORM | SpriteConst.GRAPHICS] = RunDriver.createRenderSprite(SpriteConst.IMAGE | SpriteConst.TRANSFORM | SpriteConst.GRAPHICS, null);
 	}
 
 	private static _initRenderFun(sprite: Sprite, context: Context, x: number, y: number): void {
@@ -131,9 +96,6 @@ export class RenderSprite {
 			case 0:
 				this._fun = this._no;
 				return;
-			//case SpriteConst.IMAGE: 
-			//_fun = this._image;
-			//return;
 			case SpriteConst.ALPHA:
 				this._fun = this._alpha;
 				return;
@@ -167,12 +129,6 @@ export class RenderSprite {
 			case SpriteConst.TEXTURE:
 				this._fun = this._texture;
 				return;
-			//case SpriteConst.IMAGE | SpriteConst.GRAPHICS: 
-			//_fun = this._image2;
-			//return;
-			//case SpriteConst.IMAGE | SpriteConst.TRANSFORM | SpriteConst.GRAPHICS: 
-			//_fun = this._image2;
-			//return;
 			case SpriteConst.FILTERS:
 				this._fun = Filter._filter;
 				return;
@@ -222,22 +178,6 @@ export class RenderSprite {
 		next._fun.call(next, sprite, context, x - r.x, y - r.y);
 		context.restore();
 	}
-
-	/*
-	public function _mask(sprite:Sprite, context:Context, x:Number, y:Number):void {
-		var next:RenderSprite = this._next;
-		next._fun.call(next, sprite, context, x, y);
-		var mask:Sprite = sprite.mask;
-		if (mask) {
-			context.globalCompositeOperation = "destination-in";
-			if (mask.numChildren > 0 || !mask.graphics._isOnlyOne()) {
-				mask.cacheAs = "bitmap";
-			}
-			mask.render(context, x - sprite._style.pivotX, y - sprite._style.pivotY);
-		}
-		context.globalCompositeOperation = "source-over";
-	}
-	*/
 
 	/**@internal */
 	_texture(sprite: Sprite, context: Context, x: number, y: number): void {

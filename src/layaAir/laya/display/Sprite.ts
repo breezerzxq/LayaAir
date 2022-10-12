@@ -1117,45 +1117,6 @@ export class Sprite extends Node {
      */
     render(ctx: Context, x: number, y: number): void {
         RenderSprite.renders[this._renderType]._fun(this, ctx, x + this._x, y + this._y);
-        /*
-        var rt:int = _renderType;
-        var style:SpriteStyle = _style;
-        var oldAlpha:Number = ctx.globalAlpha;
-        var save:Boolean = false;
-        if (rt & SpriteConst.TRANSFORM ) {
-            ctx.save();
-            save = true;
-            ctx.transform(transform.a, transform.b, transform.c, transform.d, transform.tx + x+_x, transform.ty + y+_y);
-        }
-    	
-        if ( rt & SpriteConst.ALPHA) {
-            var alpha:Number = style.alpha;
-            if (alpha > 0.01 || _needRepaint()) {
-                //var temp:Number = context.globalAlpha;
-                ctx.globalAlpha *= alpha;
-                //context.globalAlpha = temp;
-            }				
-        }
-    	
-        if ( rt & SpriteConst.TEXTURE ) {
-            var tex:Texture = texture;
-            ctx.drawTexture(tex, x-pivotX+_x, y-pivotY+_y, tex.width, tex.height);
-        }
-    	
-        if ( rt & SpriteConst.GRAPHICS) {
-            _graphics && _graphics._render(this, ctx, x-pivotX+_x, y-pivotY+_y);
-        }
-    	
-        if (_children.length) {
-            _children.forEach(function(c:Sprite) {
-                c._visible && c.render(ctx, x - pivotX+_x, y - pivotY+_y);
-            } );
-        }
-        ctx.globalAlpha = oldAlpha;//TODO 可能慢
-        if (save) {
-            ctx.restore();
-        }
-        */
         this._repaint = 0;
     }
 

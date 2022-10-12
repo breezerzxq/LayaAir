@@ -72,6 +72,7 @@ export class Graphics {
      */
     destroy(): void {
         this.clear(true);
+
         if (this._graphicBounds) this._graphicBounds.destroy();
         this._graphicBounds = null;
         this._vectorgraphArray = null;
@@ -80,6 +81,7 @@ export class Graphics {
             this._sp._setRenderType(0);
             this._sp = null;
         }
+
         this._destroyData();
     }
 
@@ -124,12 +126,10 @@ export class Graphics {
         }
     }
 
-    /**@private */
     private _clearBoundsCache(): void {
         if (this._graphicBounds) this._graphicBounds.reset();
     }
 
-    /**@private */
     private _initGraphicBounds(): void {
         if (!this._graphicBounds) {
             this._graphicBounds = GraphicsBounds.create();
@@ -138,7 +138,6 @@ export class Graphics {
     }
 
     /**
-     * @internal
      * 重绘此对象。
      */
     _repaint(): void {
@@ -182,7 +181,6 @@ export class Graphics {
     }
 
     /**
-     * @private
      * @param realSize	（可选）使用图片的真实大小，默认为false
      * 获取端点列表。
      */
@@ -224,13 +222,9 @@ export class Graphics {
         if (this._one == null) {
             this._one = args;
             this._render = this._renderOneImg;
-            //if(_sp)_sp._renderType |= SpriteConst.IMAGE;
         } else {
             this._saveToCmd(null, args);
         }
-        //if (!tex.loaded) {
-        //tex.once(Event.LOADED, this, _textureLoaded, [tex, args]);
-        //}
         this._repaint();
         return args;
     }
@@ -323,7 +317,6 @@ export class Graphics {
     }
 
     /**
-     * @internal
      * 保存到命令流。
      */
     _saveToCmd(fun: Function | null, args: any): any {
@@ -335,7 +328,6 @@ export class Graphics {
             this._one = args;
             this._render = this._renderOne;
         } else {
-            //_sp && (_sp._renderType &= ~SpriteConst.IMAGE);
             this._render = this._renderAll;
             (this._cmds || (this._cmds = [])).length === 0 && this._cmds.push(this._one);
             this._cmds.push(args);
@@ -384,12 +376,10 @@ export class Graphics {
         return this._saveToCmd(Render._context.fillText, FillTextCmd.create.call(this, text, null, x, y, font || ILaya.Text.defaultFontStr(), fillColor, textAlign, lineWidth, borderColor));
     }
 
-    /*** @private */
     fillWords(words: any[], x: number, y: number, font: string, color: string): FillTextCmd {
         return this._saveToCmd(Render._context.fillText, FillTextCmd.create.call(this, null, words, x, y, font || ILaya.Text.defaultFontStr(), color, '', 0, null));
     }
 
-    /*** @private */
     fillBorderWords(words: any[], x: number, y: number, font: string, fillColor: string, borderColor: string, lineWidth: number): FillTextCmd {
         return this._saveToCmd(Render._context.fillText, FillTextCmd.create.call(this, null, words, x, y, font || ILaya.Text.defaultFontStr(), fillColor, "", lineWidth, borderColor));
     }
@@ -472,7 +462,6 @@ export class Graphics {
     }
 
     /**
-     * @private
      * 替换文本内容。
      * @param text 文本内容。
      * @return 替换成功则值为true，否则值为flase。
@@ -497,14 +486,12 @@ export class Graphics {
         return false;
     }
 
-    /**@private */
     private _isTextCmd(cmd: any): boolean {
         var cmdID: string = cmd.cmdID;
         return cmdID == FillTextCmd.ID;
     }
 
     /**
-     * @private
      * 替换文本颜色。
      * @param color 颜色。
      */
@@ -524,7 +511,6 @@ export class Graphics {
         }
     }
 
-    /**@private */
     private _setTextCmdColor(cmdO: any, color: string): void {
         var cmdID: string = cmdO.cmdID;
         switch (cmdID) {
@@ -561,15 +547,9 @@ export class Graphics {
         }
     }
 
-    /**
-     * @internal
-     */
     _renderEmpty(sprite: Sprite, context: Context, x: number, y: number): void {
     }
 
-    /**
-     * @internal
-     */
     _renderAll(sprite: Sprite, context: Context, x: number, y: number): void {
         var cmds = this._cmds!;
         for (var i = 0, n = cmds.length; i < n; i++) {
@@ -577,17 +557,11 @@ export class Graphics {
         }
     }
 
-    /**
-     * @internal
-     */
     _renderOne(sprite: Sprite, context: Context, x: number, y: number): void {
         context.sprite = sprite;
         this._one.run(context, x, y);
     }
 
-    /**
-     * @internal
-     */
     _renderOneImg(sprite: Sprite, context: Context, x: number, y: number): void {
         context.sprite = sprite;
         this._one.run(context, x, y);
@@ -717,7 +691,6 @@ export class Graphics {
     }
 
     /**
-     * @private
      * 绘制带九宫格的图片
      * @param	texture
      * @param	x

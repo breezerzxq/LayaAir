@@ -173,10 +173,13 @@ export class RenderSprite {
 		if (width === 0 || height === 0) {
 			return;
 		}
-		context.save();
-		context.clipRect(x, y, width, height);
-		next._fun.call(next, sprite, context, x - r.x, y - r.y);
-		context.restore();
+
+		context.save(); // 保持clip前的context设置
+
+		context.clipRect(x, y, width, height); // clip设置
+		next._fun.call(next, sprite, context, x - r.x, y - r.y); // 影响后续所有渲染指令
+
+		context.restore(); // 恢复clip前的context设置
 	}
 
 	/**@internal */
@@ -226,14 +229,16 @@ export class RenderSprite {
 	/**@internal */
 	//TODO:coverage
 	_alpha(sprite: Sprite, context: Context, x: number, y: number): void {
-
 		var style: SpriteStyle = sprite._style;
 		var alpha: number;
 		if ((alpha = style.alpha) > 0.01 || sprite._needRepaint()) {
 			var temp: number = context.globalAlpha;
+
 			context.globalAlpha *= alpha;
+
 			var next: RenderSprite = this._next;
 			next._fun.call(next, sprite, context, x, y);
+
 			context.globalAlpha = temp;
 		}
 	}
@@ -244,8 +249,10 @@ export class RenderSprite {
 		var style: SpriteStyle = sprite._style;
 		if (transform && _next != RenderSprite.NORENDER) {
 			context.save();
+
 			context.transform(transform.a, transform.b, transform.c, transform.d, transform.tx + x, transform.ty + y);
 			_next._fun.call(_next, sprite, context, 0, 0);
+
 			context.restore();
 		} else {
 			if (_next != RenderSprite.NORENDER)
@@ -269,7 +276,9 @@ export class RenderSprite {
 			var _x: number, _y: number;
 
 			for (i = 0; i < n; ++i) {
-				if ((ele = (<Sprite>childs[i]))._visible && ((_x = ele._x) < right && (_x + ele.width) > left && (_y = ele._y) < bottom && (_y + ele.height) > top)) {
+				let ele = (<Sprite>childs[i]);
+				
+				if (ele._visible && ((_x = ele._x) < right && (_x + ele.width) > left && (_y = ele._y) < bottom && (_y + ele.height) > top)) {
 					ele.render(context, x, y);
 				}
 			}
@@ -277,12 +286,12 @@ export class RenderSprite {
 			for (var i: number = 0; i < n; ++i)
 				(ele = ((<Sprite>childs[i])))._visible && ele.render(context, x, y);
 		}
+
 		textLastRender && context.drawCallOptimize(false);
 	}
 
 	/**@internal */
 	_canvas(sprite: Sprite, context: Context, x: number, y: number): void {
-
 		var _cacheStyle: CacheStyle = sprite._cacheStyle;
 		var _next: RenderSprite = this._next;
 
@@ -331,7 +340,6 @@ export class RenderSprite {
 
 	/**@internal */
 	_canvas_repaint(sprite: Sprite, context: Context, x: number, y: number): void {
-
 		var _cacheStyle: CacheStyle = sprite._cacheStyle;
 		var _next: RenderSprite = this._next;
 		var tx: Context;
@@ -432,8 +440,10 @@ export class RenderSprite {
 		var next: RenderSprite = this._next;
 		if (style.blendMode) {
 			context.save();
+
 			context.globalCompositeOperation = style.blendMode;
 			next._fun.call(next, sprite, context, x, y);
+
 			context.restore();
 		} else {
 			next._fun.call(next, sprite, context, x, y);
@@ -455,6 +465,7 @@ export class RenderSprite {
 		var ctx: Context = (<Context>context);
 		if (mask) {
 			ctx.save();
+
 			var preBlendMode: string = ctx.globalCompositeOperation;
 			var tRect: Rectangle = new Rectangle();
 			//裁剪范围是根据mask来定的
@@ -508,6 +519,7 @@ export class RenderSprite {
 				//恢复混合模式
 				ctx.addRenderObject(SubmitCMD.create([preBlendMode], RenderSprite.setBlendMode, this));
 			}
+
 			ctx.restore();
 		} else {
 			next._fun.call(next, sprite, context, x, y);
@@ -531,4 +543,3 @@ export class RenderSprite {
 	}
 
 }
-

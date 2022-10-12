@@ -156,17 +156,6 @@ export class Context {
 		this.fillRect(x, y, width, height, null);
 	}
 
-	///**@private */
-	//public function transformByMatrix(value:Matrix):void {
-	//this.transform(value.a, value.b, value.c, value.d, value.tx, value.ty);
-	//}
-
-	/**@private */
-	//TODO:coverage
-	//public function setTransformByMatrix(value:Matrix):void {
-	//	this.setTransform(value.a, value.b, value.c, value.d, value.tx, value.ty);
-	//}
-
 	/**@private */
 	//TODO:coverage
 	drawTexture2(x: number, y: number, pivotX: number, pivotY: number, m: Matrix, args2: any[]): void {
@@ -778,6 +767,7 @@ export class Context {
 		this._save[this._save._length++] = SaveMark.Create(this);
 	}
 
+	/**恢复 */
 	restore(): void {
 		var sz: number = this._save._length;
 		var lastBlend: number = this._nBlendType;
@@ -1002,31 +992,6 @@ export class Context {
 			this._inner_drawTexture(tex, bmpid, pos[ipos++] + tx, pos[ipos++] + ty, 0, 0, null, null, 1.0, false);
 		}
 
-		/*
-		var pre:Rectangle = _clipRect;
-		_clipRect = MAXCLIPRECT;
-		if (!_drawTextureM(tex, pos[0], pos[1], tex.width, tex.height,null, 1)) {
-			throw "drawTextures err";
-			return;
-		}
-		_clipRect = pre;
-		
-		Stat.drawCall++;//= pos.length / 2;
-		
-		if (pos.length < 4)
-			return;
-		
-		var finalVB:VertexBuffer2D = _curSubmit._vb || _vb;
-		var sx:Number = _curMat.a, sy:Number = _curMat.d;
-		var vpos:int = finalVB._byteLength >> 2;// + Context._RECTVBSIZE;
-		finalVB.byteLength = finalVB._byteLength + (pos.length / 2 - 1) * Context._RECTVBSIZEBYTE;
-		var vbdata:Float32Array = finalVB.getFloat32Array();
-		for (var i:int = 2, sz:int = pos.length; i < sz; i += 2) {
-			GlUtils.copyPreImgVb(finalVB,vpos, (pos[i] - pos[i - 2]) * sx, (pos[i + 1] - pos[i - 1]) * sy,vbdata);
-			_curSubmit._numEle += 6;
-			vpos += Context._RECTVBSIZE;
-		}
-		*/
 	}
 
 	/**
@@ -1079,15 +1044,6 @@ export class Context {
 		this._submits[this._submits._length++] = SubmitCMD.create([], function (): void { debugger; }, this);
 	}
 
-	/*
-	private function copyClipInfo(submit:Submit, clipInfo:Array):void {
-		var cd:Array = submit.shaderValue.clipDir;
-		cd[0] = clipInfo[2]; cd[1] = clipInfo[3]; cd[2] = clipInfo[4]; cd[3] = clipInfo[5];
-		var cp:Array = submit.shaderValue.clipRect;
-		cp[0] = clipInfo[0]; cp[1] = clipInfo[1];
-		submit.clipInfoID = this._clipInfoID;
-	}
-	*/
 	/**@internal */
 	_copyClipInfo(submit: SubmitBase, clipInfo: Matrix): void {
 		var cm: any[] = submit.shaderValue.clipMatDir;
@@ -1104,14 +1060,6 @@ export class Context {
 
 	private isSameClipInfo(submit: SubmitBase): boolean {
 		return (submit.clipInfoID === this._clipInfoID);
-		/*
-		var cd:Array = submit.shaderValue.clipDir;
-		var cp:Array = submit.shaderValue.clipRect;
-		
-		if (clipInfo[0] != cp[0] || clipInfo[1] != cp[1] || clipInfo[2] != cd[0] || clipInfo[3] != cd[1] || clipInfo[4] != cd[2] || clipInfo[5] != cd[3] ) 
-			return false;
-		return true;
-		*/
 	}
 
 	/**
@@ -1541,12 +1489,6 @@ export class Context {
 		var submit: ISubmit;
 		if (src._targets) {
 			//生成渲染结果到src._targets上
-			/*
-			this._submits[this._submits._length++] = SubmitCanvas.create(src, 0, null);
-			_curSubmit = SubmitBase.RENDERBASE;
-			//画出src._targets
-			//drawTexture(src._targets.target.getTexture(), x, y, width, height, 0, 0);
-			*/
 			//应用并清空canvas中的指令。如果内容需要重画，RenderSprite会给他重新加入submit
 			if (src._submits._length > 0) {
 				submit = SubmitCMD.create([src, src._targets], this._flushToTarget, this);
@@ -1555,14 +1497,6 @@ export class Context {
 			//在这之前就已经渲染出结果了。
 			this._drawRenderTexture(src._targets, x, y, width, height, null, 1.0, RenderTexture2D.flipyuv);
 			this._curSubmit = SubmitBase.RENDERBASE;
-			/*
-			this._submits[this._submits._length++] = SubmitCanvas.create(src, 0, null);
-			//src._targets.flush(src);
-			_curSubmit = SubmitBase.RENDERBASE;
-			//src._targets.drawTo(this, x, y, width, height);
-			//drawTexture(src._targets.target.getTexture(), x, y, width, height, 0, 0);
-			_drawRenderTexture(src._targets, x, y, width, height,null,1.0, RenderTexture.flipyuv);
-			*/
 		} else {
 			var canv: WebGLCacheAsNormalCanvas = (<WebGLCacheAsNormalCanvas>(canvas as any));
 			if (canv.touches) {
@@ -2103,22 +2037,6 @@ export class Context {
 		tPath._lastOriY = y;
 		tPath.addPoint(x, y);
 	}
-	/*
-	public function drawCurves(x:Number, y:Number,points:Array, lineColor:*, lineWidth:Number = 1):void {
-		//setPathId(-1);
-		beginPath();
-		strokeStyle = lineColor;
-		this.lineWidth = lineWidth;
-		var points:Array = points;
-		//movePath(x, y); TODO 这个被去掉了
-		moveTo(points[0], points[1]);
-		var i:int = 2, n:int = points.length;
-		while (i < n) {
-			quadraticCurveTo(points[i++], points[i++], points[i++], points[i++]);
-		}
-		stroke();
-	}
-	*/
 
 	arcTo(x1: number, y1: number, x2: number, y2: number, r: number): void {
 		/*

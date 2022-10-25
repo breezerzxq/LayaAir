@@ -1,10 +1,11 @@
 import { Context } from "../../resource/Context"
 import { Pool } from "../../utils/Pool"
+import { ICmd } from "./ICmd";
 
 /**
  * 绘制矩形
  */
-export class DrawRectCmd {
+export class DrawRectCmd implements ICmd {
     static ID: string = "DrawRect";
 
     /**
@@ -36,7 +37,6 @@ export class DrawRectCmd {
      */
     lineWidth: number;
 
-    /**@private */
     static create(x: number, y: number, width: number, height: number, fillColor: any, lineColor: any, lineWidth: number): DrawRectCmd {
         var cmd: DrawRectCmd = Pool.getItemByClass("DrawRectCmd", DrawRectCmd);
         cmd.x = x;
@@ -58,12 +58,11 @@ export class DrawRectCmd {
         Pool.recover("DrawRectCmd", this);
     }
 
-    /**@private */
+    /**执行绘制rect */
     run(context: Context, gx: number, gy: number): void {
         context.drawRect(this.x + gx, this.y + gy, this.width, this.height, this.fillColor, this.lineColor, this.lineWidth);
     }
 
-    /**@private */
     get cmdID(): string {
         return DrawRectCmd.ID;
     }

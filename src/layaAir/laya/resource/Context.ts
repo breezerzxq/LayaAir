@@ -268,12 +268,13 @@ export class Context {
 	}
 	/**Math.PI*2的结果缓存 */
 	static PI2: number = 2 * Math.PI;
-	/**@internal */
 	_drawCircle(x: number, y: number, radius: number, fillColor: any, lineColor: any, lineWidth: number, vid: number): void {
 		Stat.renderBatches++;
+
 		this.beginPath(true);
 		this.arc(x, y, radius, 0, Context.PI2);
 		this.closePath();
+		
 		//绘制
 		this._fillAndStroke(fillColor, lineColor, lineWidth);
 	}
@@ -2207,9 +2208,6 @@ export class Context {
 			x = cx + dx * r;
 			y = cy + dy * r;
 			if (x != this._path._lastOriX || y != this._path._lastOriY) {
-				//var _tx1:Number = x, _ty1:Number = y;
-				//x = _curMat.a * _tx1 + _curMat.c * _ty1 + _curMat.tx;
-				//y = _curMat.b * _tx1 + _curMat.d * _ty1 + _curMat.ty;
 				tPath.addPoint(x, y);
 			}
 		}
@@ -2218,9 +2216,6 @@ export class Context {
 		x = cx + dx * r;
 		y = cy + dy * r;
 		if (x != this._path._lastOriX || y != this._path._lastOriY) {
-			//var _x2:Number = x, _y2:Number = y;
-			//x = _curMat.a * _x2 + _curMat.c * _y2 + _curMat.tx;
-			//y = _curMat.b * _x2 + _curMat.d * _y2 + _curMat.ty;
 			tPath.addPoint(x, y);
 		}
 	}

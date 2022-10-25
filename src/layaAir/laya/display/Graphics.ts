@@ -45,6 +45,7 @@ import { ILaya } from "../../ILaya";
 export class Graphics {
     _sp: Sprite | null = null;
     _one: any = null;
+    /**由RenderSprite._graphics调用 */
     _render: (sprite: Sprite, context: Context, x: number, y: number) => void = this._renderEmpty;
     private _cmds: any[] | null = null;
     protected _vectorgraphArray: any[] | null = null;
@@ -559,7 +560,7 @@ export class Graphics {
 
     _renderOne(sprite: Sprite, context: Context, x: number, y: number): void {
         context.sprite = sprite;
-        this._one.run(context, x, y);
+        this._one.run(context, x, y); // 实际绘制 @see DrawRectCmd.run
     }
 
     _renderOneImg(sprite: Sprite, context: Context, x: number, y: number): void {
@@ -621,7 +622,10 @@ export class Graphics {
     drawRect(x: number, y: number, width: number, height: number, fillColor: any, lineColor: any = null, lineWidth: number = 1): DrawRectCmd {
         var offset = (lineWidth >= 1 && lineColor) ? lineWidth / 2 : 0;
         var lineOffset = lineColor ? lineWidth : 0;
-        return this._saveToCmd(Render._context.drawRect, DrawRectCmd.create.call(this, x + offset, y + offset, width - lineOffset, height - lineOffset, fillColor, lineColor, lineWidth));
+
+        // 保持绘制指令 & 设置render方法
+        return this._saveToCmd(Render._context.drawRect,
+            DrawRectCmd.create.call(this, x + offset, y + offset, width - lineOffset, height - lineOffset, fillColor, lineColor, lineWidth));
     }
 
     /**
@@ -635,7 +639,9 @@ export class Graphics {
      */
     drawCircle(x: number, y: number, radius: number, fillColor: any, lineColor: any = null, lineWidth: number = 1): DrawCircleCmd {
         var offset = (lineWidth >= 1 && lineColor) ? lineWidth / 2 : 0;
-        return this._saveToCmd(Render._context._drawCircle, DrawCircleCmd.create.call(this, x, y, radius - offset, fillColor, lineColor, lineWidth, 0));
+        return this._saveToCmd(
+            Render._context._drawCircle, // 绘制
+            DrawCircleCmd.create.call(this, x, y, radius - offset, fillColor, lineColor, lineWidth, 0)); // 创建DrawCircleCmd实例。
     }
 
     /**

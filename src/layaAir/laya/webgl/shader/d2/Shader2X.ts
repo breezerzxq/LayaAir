@@ -2,6 +2,7 @@ import { Shader } from "../Shader"
 import { ShaderValue } from "../ShaderValue"
 
 export class Shader2X extends Shader {
+    /**去掉size的所有的uniform */
     _params2dQuick2: any[]|null = null;
     _shaderValueWidth: number = 0;
     _shaderValueHeight: number = 0;
@@ -24,7 +25,7 @@ export class Shader2X extends Shader {
         this.upload(shaderValue, this._params2dQuick2 || this._make2dQuick2());
     }
 
-    //去掉size的所有的uniform
+    /**去掉size的所有的uniform */
     _make2dQuick2(): any[] {
         if (!this._params2dQuick2) {
             this._params2dQuick2 = [];

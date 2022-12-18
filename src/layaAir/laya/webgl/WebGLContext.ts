@@ -261,8 +261,11 @@ export class WebGLContext {
     }
 
 	/**
-	 * @internal
-	 */
+     * 
+     * @param gl 
+     * @param target 绑定点(目标)
+     * @param texture 要绑定的WebGLTexture对象。
+     */
     static bindTexture(gl: WebGLRenderingContext, target: any, texture: any): void {
         if (WebGLContext._activeTextures[WebGLContext._activedTextureID - gl.TEXTURE0] !== texture) {
             gl.bindTexture(target, texture);

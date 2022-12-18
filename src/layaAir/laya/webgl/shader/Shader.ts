@@ -207,6 +207,7 @@ export class Shader extends BaseShader {
 			_params.push(one);
 		}
 		*/
+        // 从program获取参数个数
         var nUniformNum: number = this.customCompile ? result.uniforms.length : gl.getProgramParameter(this._program, gl.ACTIVE_UNIFORMS); //个数
 
         for (i = 0; i < nUniformNum; i++) {
@@ -509,7 +510,10 @@ export class Shader extends BaseShader {
         var one: any = this._paramsMap[name];
         one.fun.call(this, one, value);
     }
-
+    /**
+     * 其实就是：gl.bindTexture(target:WebGLContext.mainContext, texture:WebGLTexture);
+     * @param value is WebGLTexture
+     */
     uploadTexture2D(value: any): void {
         //这个可能执行频率非常高，所以这里能省就省点
         //Stat.shaderCall++;
@@ -531,7 +535,7 @@ export class Shader extends BaseShader {
         BaseShader.activeShader = BaseShader.bindShader = this;
         //recreateResource();
         var gl: WebGLRenderingContext = WebGLContext.mainContext;
-        WebGLContext.useProgram(gl, this._program);
+        WebGLContext.useProgram(gl, this._program); // 告诉webgl使用的program
 
         if (this._reCompile) {
             params = this._params;
@@ -545,16 +549,16 @@ export class Shader extends BaseShader {
 
         for (var i: number = 0; i < n; i++) {
             one = params[i];
-            if ((value = (shaderValue as any)[one.name]) !== null)
+            if ((value = (shaderValue as any)[one.name]) !== null) // 从shaderValue获取参数，上层给shader中对应的uniform。
 
-                shaderCall += one.fun.call(this, one, value);
+                shaderCall += one.fun.call(this, one, value); // 更新shader参数值，并更新shaderCall计数。
 			/*
 			one.glfun?
 				one.glfun.call(gl, one.location, false, value):
 				one.fun.call(this, one, value);*/
         }
 
-        Stat.shaderCall += shaderCall;
+        Stat.shaderCall += shaderCall; // 更新总的shaderCall
     }
 
 	/**

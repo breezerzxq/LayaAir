@@ -52,18 +52,21 @@ export class SubmitTexture extends SubmitBase {
             lastSubmit.shaderValue.defines._value === this.shaderValue.defines._value && //shader define要相同. 
             (this.shaderValue.defines._value & ShaderDefines2D.NOOPTMASK) == 0 //只有基本类型的shader走这个，像blur，glow，filltexture等都不要这样优化
         ) {
+            // shader参数相同，对当前激活的shader，更新绑定的texture:WebGLTexture
             (<Shader>BaseShader.activeShader).uploadTexture2D(source);
         }
         else {
+            // shader参数不同，需要上传shader
             if (BlendMode.activeBlendFunction !== this._blendFn) {
                 WebGLContext.setBlend(gl, true);
                 this._blendFn(gl);
                 BlendMode.activeBlendFunction = this._blendFn;
             }
-            this.shaderValue.texture = source;
-            this.shaderValue.upload();
+            this.shaderValue.texture = source; // 设置shader使用的纹理
+            this.shaderValue.upload();// 上传
         }
 
+        // 绘制三角形
         gl.drawElements(gl.TRIANGLES, this._numEle, gl.UNSIGNED_SHORT, this._startIdx);
 
         Stat.renderBatches++;

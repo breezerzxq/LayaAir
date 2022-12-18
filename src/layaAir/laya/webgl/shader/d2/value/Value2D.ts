@@ -93,7 +93,7 @@ import { ILaya } from "../../../../../ILaya";
 			//ret.setAttributesLocation(_attribLocation); 由于上面函数的流程的修改，导致这里已经晚了
 			return ret;
 		}
-		
+		/**提交shader到GPU */
 		 upload():void{
 			var renderstate2d:any= RenderState2D;
 			

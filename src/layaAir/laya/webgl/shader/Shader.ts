@@ -222,7 +222,7 @@ export class Shader extends BaseShader {
             this._params.push(one);
         }
 
-        for (i = 0, n = this._params.length; i < n; i++) {
+        for (i = 0, n = this._params.length; i < n; i++) { // 构建每个参数的相关属性
             one = this._params[i];
             one.indexOfParams = i;
             one.index = 1;

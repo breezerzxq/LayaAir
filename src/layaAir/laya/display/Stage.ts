@@ -172,6 +172,10 @@ export class Stage extends Sprite {
 	_curUIBase: Sprite|null = null; 		// 给鼠标事件capture用的。用来找到自己的根。因为3d界面的根不是stage（界面链会被3d对象打断）
 	/**使用物理分辨率作为canvas大小，会改进渲染效果，但是会降低性能*/
 	useRetinalCanvas: boolean = false;
+
+	/**是否限制渲染分辨率 */
+	enableLimitWebGLSize:boolean = false;
+	
 	/**场景类，引擎中只有一个stage实例，此实例可以通过Laya.stage访问。*/
 	constructor() {
 		super();
@@ -410,6 +414,25 @@ export class Stage extends Sprite {
 		if (this.useRetinalCanvas) {
 			realWidth =  canvasWidth = screenWidth;
 			realHeight = canvasHeight = screenHeight;
+		}
+
+		if (this.enableLimitWebGLSize){
+			realWidth = screenWidth;
+			realHeight = screenHeight;
+			
+			scaleX = screenWidth / this.designWidth
+			scaleY = screenHeight / this.designHeight;
+
+			let bFixedWidth = true;
+			if(bFixedWidth){
+				scaleY = scaleX;
+				this._width = canvasWidth = this.designWidth;
+				this._height = canvasHeight = Math.round(screenHeight / scaleX);
+			}else{
+				scaleX = scaleY;
+				this._height = canvasHeight = this.designHeight;
+				this._width = canvasWidth = Math.round(screenWidth / scaleY);
+			}
 		}
 
 		//根据不同尺寸缩放stage画面

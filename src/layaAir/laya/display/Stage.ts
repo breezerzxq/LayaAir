@@ -174,7 +174,7 @@ export class Stage extends Sprite {
 	useRetinalCanvas: boolean = false;
 
 	/**是否限制渲染分辨率 */
-	enableLimitWebGLSize:boolean = false;
+	private _enableLimitWebGLSize:boolean = false;
 	
 	/**场景类，引擎中只有一个stage实例，此实例可以通过Laya.stage访问。*/
 	constructor() {
@@ -424,7 +424,7 @@ export class Stage extends Sprite {
 			scaleY = screenHeight / this.designHeight;
 
 			let bFixedWidth = true;
-			if(bFixedWidth){
+			if (bFixedWidth){
 				scaleY = scaleX;
 				this._width = canvasWidth = this.designWidth;
 				this._height = canvasHeight = Math.round(screenHeight / scaleX);
@@ -524,6 +524,14 @@ export class Stage extends Sprite {
 
 	set scaleMode(value: string) {
 		this._scaleMode = value;
+		ILaya.systemTimer.callLater(this, this._changeCanvasSize);
+	}
+
+	get enableLimitWebGLSize():boolean{
+		return this._enableLimitWebGLSize;
+	}
+	set enableLimitWebGLSize(value:boolean){
+		this._enableLimitWebGLSize = value;
 		ILaya.systemTimer.callLater(this, this._changeCanvasSize);
 	}
 
